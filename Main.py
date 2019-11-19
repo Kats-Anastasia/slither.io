@@ -98,11 +98,7 @@ class Snake():
             if self.balls.index(b) > 0:
                 b.move(self.balls[(self.balls.index(b) - 1)]
             else: b.move()
-        
-        
-            
         # name - имя змеи, висящее над ней и которое вводится при запуске, тогда же выбирается и цвет.
-        # отвечает за создание начальной змеи начального размера, длины и всего такого. 
 
     def targeting(self, event = 0): #Нужно объединить со следующей функцией
         pass
@@ -192,7 +188,6 @@ class game():
             # Тут еще хуйня, которая выполняет выбор цвета змеи, вводит название
             pygame.time.delay(20)
         self.start_game(name=self.name, color=self.color)
-
     def start_game(self):
         self.screen = pygame.display.set_mode((1000,1000))
         self.new_snake = Snake(name=self.name, color=self.color, game=self)
