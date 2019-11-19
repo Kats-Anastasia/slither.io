@@ -3,76 +3,33 @@ import math
 import pygame
 
 
-class Ball():
-    def __init__(self, x, y, r=25, color=0, game):
-        self.radius = r
+class Food():
+    def __init__(self, game, x=0, y=0, DEATH=0, color=0):
         self.x = x
         self.y = y
-        self.color = color
-        self.game = game
-        if self.color == 0:
-            self.color = random.choice(self.game.COLORS)
-        pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
-    def move(self, other):
-        # Вводишь предыдущий шарик (который ближе к башке) и он двигает новый. Движение змеи происходит с хвоста
-        self.x = other.x
-        self.y = other.y
-        pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
-
-    def grow(self, ivent=0):
-        pass
-    
-class Head(Ball): # Мб это будет просто функцией в классе Ball
-    def __init__(self, x, y, color, game):
-        self.x = x
-        self.y = y
-        self.r = 25
-        self.game = game
-        self.color = color
-        pygame.draw.circle(self.game.screen, self.color[0],(self.x,self.y), self. r)
-        pygame.draw.circle(self.game.screen, game.
-    def move(self):
-        pass
-        
-    def hit(self, other): #Пока хз, может и не нужна, но кажется надо
-        pass
-
-class Food():food
-    def __init__(self, x=0, y=0, game, DEATH=0, color=0):
-        self.x = x
-        self.y = y
-        self.timer = 0
         self.game = game
         self.r = 5
         self.game.energy += 1
         if self.x == 0 and self.y == 0:       #Создает шарик еды в случайном месте
             color = random.choice(self.game.COLORS)
-            self.x = random.uniform(0, 10000)
-            self.y = random.uniform(0, 10000)
-            pygame.draw.circle(self.game.screen_food, color[2], (self.x, self.y), self.r + 4)
-            pygame.draw.circle(self.game.screen_food, color[0], (self.x, self.y), self.r)
-            pygame.draw.circle(self.game.screen_food, color[1], (self.x, self.y), self.r - 5)
+            self.x = random.uniform(5, 9995)
+            self.y = random.uniform(5, 9995)
+            pygame.draw.circle(self.game.screen, color[2], (self.x, self.y), self.r + 4)
+            pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
+            pygame.draw.circle(self.game.screen, color[1], (self.x, self.y), self.r - 5)
         else:
             if Death !=0:          # Если змея умерла, создает большие шарики еды на месте змеи
-                self.r = 25 # Например
-                pygame.draw.circle(self.game.screen_food, color[2], (self.x, self.y), self.r + 4)
-                pygame.draw.circle(self.game.screen_food, color[0], (self.x, self.y), self.r)
-                pygame.draw.circle(self.game.screen_food, color[1], (self.x, self.y), self.r - 5)
-            else:         # Если змея оставляет след, генерит шарики еды
-                pygame.draw.circle(self.game.screen_food, color[2], (self.x, self.y), self.r + 4)
-                pygame.draw.circle(self.game.screen_food, color[0], (self.x, self.y), self.r)
-                pygame.draw.circle(self.game.screen_food, color[1], (self.x, self.y), self.r - 5)
-
-    def pulsation(self):  # Если на это нормально будет смотреть, то они будут пульсировать. Если нет, то ну нахуй, ибо скорее всего будет лагать + некрасиво 
-        self.r = self.timer % 5
-        self.timer += 1
-        pygame.draw.circle(self.game.screen, color[2], (self.x, self.y), self.r)
-
+                self.r = 25        # Например
+                pygame.draw.circle(self.game.screen, color[2], (self.x, self.y), self.r + 4)
+                pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
+                pygame.draw.circle(self.game.screen, color[1], (self.x, self.y), self.r - 5)
+            else:                  # Если змея оставляет след, генерит шарики еды
+                pygame.draw.circle(self.game.screen, color[2], (self.x, self.y), self.r + 4)
+                pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
+                pygame.draw.circle(self.game.screen, color[1], (self.x, self.y), self.r - 5)
     def eaten(self, other):
         # Говорит скоко новых шариков создавать (нужно для наследования)
         pass
-
-
 class Big_food(Food):
     def __init__(self, ivent):
         # может быть будет зависеть от чего-то другого, не знаю. В общем если кнопка мыши зажата, он выдет 3 (например)
@@ -89,9 +46,38 @@ class Big_food(Food):
     def eaten(self, event):
         # Говорит скоко новых шариков создавать. Это число сильно больше чем при обычной еде.
         pass
-
-
-class snake():
+class Ball():
+    def __init__(self, x, y, color, game, r=25):
+        self.radius = r
+        self.x = x
+        self.y = y
+        self.color = color
+        self.game = game
+        pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
+    def move(self, other):
+        # Вводишь предыдущий шарик (который ближе к башке) и он двигает новый. Движение змеи происходит с хвоста
+        self.x = other.x
+        self.y = other.y
+        pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
+    def grow(self, event=0):
+        pass
+class Head(Ball): # Мб это будет просто функцией в классе Ball
+    def __init__(self, x, y, color, game, snake):
+        self.x = x
+        self.y = y
+        self.r = 25
+        self.game = game
+        self.snake = snake
+        self.color = color
+        pygame.draw.circle(self.game.screen, self.color[0],(self.x, self.y), self.r)
+        pygame.draw.circle(self.game.screen, self.game.white, (self.x, self, y), self.r) #Бляяяяя а как, тут же надо координаты постоянно пересчитывать как-то...
+    def move(self):
+        #Обработка мышки
+        self.snake.x = self.x
+        self.snake.y = self.y
+    def hit(self, other): #Пока хз, может и не нужна, но кажется надо
+        pass
+class Snake():
     def __init__(self, color, name, game):
         self.game = game
         self.color = color
@@ -101,41 +87,39 @@ class snake():
         self.lenght = 0
         self.timer = 0
         self.balls = []
-        head = Head(color=self.color, x=self.x, y=self.y, game=game)
+        head = Head(color=self.color, x=self.x, y=self.y, game=self.game, snake=self)
+        self.balls += [head]
+        self.leght += 1
         for i in range(50):
-            new_ball = Ball(x=self.x + i, y=self.y+i, game)
+            new_ball = Ball(x=self.x + i, y=self.y, game=self.game, color=self.color)
             self.balls += [new_ball]
             self.lenght += 1
+        for b in self.balls:
+            if self.balls.index(b) > 0:
+                b.move(self.balls[(self.balls.index(b) - 1)]
+            else: b.move()
+        
+        
             
         # name - имя змеи, висящее над ней и которое вводится при запуске, тогда же выбирается и цвет.
         # отвечает за создание начальной змеи начального размера, длины и всего такого. 
 
     def targeting(self, event = 0): #Нужно объединить со следующей функцией
-        if event:
-            self.an = math.atan2((event.y-self.y), (event.x-self.x))
-        if self.f2_on:
-            canv.itemconfig(self.id, fill='orange')
-        else:
-    m,d        canv.itemconfig(self.id, fill='black')
-        canv.coords(self.id, 20, 450,
-                    20 + max(self.f2_power, 20) * math.cos(self.an),
-                    450 + max(self.f2_power, 20) * math.sin(self.an)
-                    )
+        pass
     
     def move(self):
         # Пока без поправки бонусов
         pass
         
 
-    def hit(self, game):
-        g = game
-        for s in g.snakes
-            if 
+    def hit(self):
+        for s in self.game.snakes:
         # Чекает столкнулась ли наша башка с чьим-то туловищем. Только вот хз что делать если столкнулись две башки
         # Мб смотреть чей радиус вектор скорости под меньшим углом направлен к центру башки второй? Думою это лучше всего (правда блин как углы то считать?)
         # Затем самоуничтожается, превращается в большую еду каждый шарик змейки, ждет некоторое время и выкидывает на экран геймовера.
+            pass
         pass
-    
+        
     def eat(self, other):
         # Чекает столкнулась ли башка с едой, создает новый шарик, убивает еду, мб что еще делает что я забыла
         pass
@@ -211,7 +195,7 @@ class game():
 
     def start_game(self):
         self.screen = pygame.display.set_mode((1000,1000))
-        self.new_snake = snake(name=self.name, color=self.color, game)
+        self.new_snake = Snake(name=self.name, color=self.color, game=self)
         self.snakes = []
         self.snakes += [new_snake]
         self.all_food = []
@@ -220,10 +204,10 @@ class game():
             self.all_food += [new_food]
         process = True
         while process:
-            self.snake.timer += 1 # (ну или сколько там (возможно, таймер не нужен, а он будет только на фишки еды)
+            self.new_snake.timer += 1 # (ну или сколько там (возможно, таймер не нужен, а он будет только на фишки еды)
             for s in self.snakes:
                 s.move()
-            if self.energy < 1000 # Ну или сколько там
+            if self.energy < 1000: # Ну или сколько там
                 new_food = Food(game)
                 self.all_food += new_food
             for s in snakes:
