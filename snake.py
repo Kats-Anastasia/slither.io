@@ -1,52 +1,145 @@
 import pygame
 import colors
 import random
-import Ball
-import Snake
+
+import config
+from ball import Ball
+from vector import Vector2d
+from head import Head
+
+'''
+Не решенные задачи:
+1) Генерирование змеи вдали от других змей
+5) Все числовые значения буду подгонять по красоте
+7) Как сделать чтобы экран всегда в центре держал голову змеи
+'''
 
 class Snake():
-    def __init__(self, color, name, game):
-        self.game = game
-        self.color = color
-        self.name = name
-        self.x = 500 #мб внести в конфигу
-        self.y = 500
-        self.lenght = 0
-        self.timer = 0
-        self.balls = []
-        head = Head(color=self.color, x=self.x, y=self.y, game=self.game, snake=self)
-        self.balls += [head]
-        self.leght += 1
-        for i in range(50):
-            new_ball = Ball(x=self.x + i, y=self.y, game=self.game, color=self.color)
-            self.balls += [new_ball]
-            self.lenght += 1
-        for b in self.balls:
-            if self.balls.index(b) > 0:
-                b.move(self.balls[(self.balls.index(b) - 1)]
-            else: b.move()
-        # name - имя змеи, висящее над ней и которое вводится при запуске, тогда же выбирается и цвет.
-
-    def targeting(self, event = 0): #Нужно объединить со следующей функцией
-        pass
+    def __init__(self, colors, name):
+        ''' Создает новую змею в случайном месте, длиной 50 шариков.
+        Координатой змеи считаются координаты центра головы. '''
     
-    def move(self):
-        # Пока без поправки бонусов
-        pass
+        '''
+        Не готово:
+        1) Имя змеи
+        '''
+        self.colors = colors
+        self.num = len(self.colors)
+        self.name = name
+        self.energy = 0
+
+        self.x = 500
+        self.y = 500
+        self.coords = Vector2d(self.x, self.y)
+        self.r = 50
+        self.length = 0
         
+        self.balls = []
+        head = Head(color=self.colors[0], x=self.x, y=self.y)
+        self.balls += [head]
+        self.length += 1
+        for i in range(49):
+            color = self.colors[(i + 1) % self.num]
+            new_ball = Ball(x=self.x + i, y=self.y, color=color)
+            self.balls += [new_ball]
+            self.length += 1
+        self.energy = self.length
+        
+    def move(self, speeding=1):
+        ''' Двигает змею, начиная с последнего шарика, меняяя его координаты
+        на координаты предыдущего. Для головы движение прописано в отдельном классе.
+        Speeding принимает значение либо 1, либо 2-4, когда зажата кнопка мыши. '''
+        
+        for i in range(speeding):
+            for b in reversed(self.balls):
+                if self.balls.index(b) > 0:
+                    b.move(self.balls[(self.balls.index(b) - 1)])
+                else:
+                    b.move(speeding)
+                    self.x = b.x
+                    self.y = b.y
+            self.hit()
+            self.eat()
 
     def hit(self):
-        for s in self.game.snakes:
-        # Чекает столкнулась ли наша башка с чьим-то туловищем. Только вот хз что делать если столкнулись две башки
-        # Мб смотреть чей радиус вектор скорости под меньшим углом направлен к центру башки второй? Думою это лучше всего (правда блин как углы то считать?)
-        # Затем самоуничтожается, превращается в большую еду каждый шарик змейки, ждет некоторое время и выкидывает на экран геймовера.
-            pass
-        pass
+        ''' Проверяет не столкнулась ли змея с другой змеей. Если столкнулась, то
+        уничтожает змею, создает на ее месте много больших шариков еды'''
         
+        for other in config.snakes:
+            if config.snakes.index(other) != config.snakes.index(self):
+                for b in other.balls:
+                    if other.balls.index(b) != 0:
+                        if abs(self.coords - other.coords) < self.r + b.r: 
+                            self.destroyed()
+                    else:
+                        delta_r2 = self.coords - other.coords
+                        delta_r1 = other.coords - self.coords
+                        self_alfa = (delta_r1.x * self.x + delta_r1.y * self.y) / abs(self.coords) / abs(delta_r1)
+                        other_alfa = (delta_r2.x * self.other + delta_r2.y * self.other) / abs(other.coords) / abs(delta_r2)
+                        if other_alfa < self_alfa:
+                            other.destroyed()
+                        elif self_alfa < other_alfa:
+                            self.destroyed()
+                        else:
+                            if config.snakes.index(self) < config.snakes.index(other):
+                                self.destroyed()
+                            else:
+                                other.destroyed()
+                        # Сравнивает углы под которыми было соударение к линии, соединяющей центры. Выживает штука с наибольшим углом. При равных, выживает случайная
+ 
     def eat(self, other):
-        # Чекает столкнулась ли башка с едой, создает новый шарик, убивает еду, мб что еще делает что я забыла
-        pass
-    
+        '''Чекает столкнулась ли башка с едой, создает новый шарик, убивает еду'''
+        
+        for f in config.all_food:
+            if f.r + self.r > abs(self.coords - f.coords):
+                self.energy += f.energy
+                config.food_energy -= f.energy
+                config.snake_energy += f.energy
+                del config.all_food[config.all_food.index(f)]
+        self.grow()
+            
+    def grow(self): 
+        '''
+        Тут смотрится скоко энергии в змее и если ее значение больше чем сколько-то,
+        то появляется новый шарик или увеличивается радиуc
+        '''
+        
+        length = self.energy // 1
+        while len(self.balls) < length:
+            color = self.colors[len(self.balls) % self.num]
+            new_ball = Ball(x=self.balls[len(self.balls) + 1].x, y=self.balls[len(self.balls) + 1].y, color=color)
+            self.balls += [new_ball]
+            self.length += 1
+            for b in self.balls:
+                b.r += 0.1
     def destroyed(self):
-        #Уничтожет змею, на месте каждого шарика создает большую еду
-        pass
+        '''
+        Тут уничтожается змея, превращается в большую еду каждый шарик змейки
+        ждет некоторое время и выкидывает на экран геймовера.'''
+        
+        if len(self.balls) % 3 == 0:
+            snake_energy += 2
+        elif len(self.balls) % 3 == 1:
+            snake_energy += 1
+        for b in self.balls:
+            if self.balls.index(b) % 3 == 0:
+                
+                dr = random.uniform(0, self.r - 5)
+                dx = random.uniform(0 - dr, dr)
+                sign = random.choise(-1, 1)
+                dy = math.sqrt( dr ** 2 - dx ** 2) * sign
+            
+                new_food = Food(r=5, x=b.x + dx, y=b.y + dy)
+                config.all_food += [new_food]
+                config.food_energy += 2.5
+                config.snake_energy -= 3
+                del config.self.balls[config.self.balls.index(f)]
+        del config.snakes[config.snakes.index(self)]
+    def draw(self):
+        '''
+        Вызывается каждый раз, когда нужно отрисовать змею.
+        '''    
+        
+        for b in reversed(self.balls):
+            b.draw(self.coords)
+        
