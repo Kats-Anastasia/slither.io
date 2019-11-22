@@ -2,19 +2,43 @@ import pygame
 import colors
 import random
 
+from vector import Vector2d
+import config
+
+'''
+Собственная энергия каждого шарика всегда равна 1
+'''
+
+
 class Ball():
-    def __init__(self, x, y, color, game, r):
-        self.r = random.uniform(2, 5)
+    def __init__(self, x, y, color, r):
+        '''
+        Создает шарик змеи с заданными координатами и радиусом.
+        '''
+        
+        self.r = r
         self.x = x
         self.y = y
+        self.coords = Vector2d(self.x, self.y)
         self.color = color
-        self.game = game
-        pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
+        
     def move(self, other):
-        # Вводишь предыдущий шарик (который ближе к башке) и он двигает новый. Движение змеи происходит с хвоста
+        '''
+        Вводишь предыдущий шарик (который ближе к башке) и он двигает этот. Движение змеи происходит с хвоста
+        '''
         self.x = other.x
         self.y = other.y
-        pygame.draw.circle(self.game.screen, color[0], (self.x, self.y), self.r)
-    def grow(self, event=0):
-        pass
-		
+        
+    def draw(self, center, r):
+        '''
+        Рисует шарик змеи в случае, если он попадает на экран. Пересчитывает свои "глобальные" координаты в координаты экрана.
+        '''
+        alfa = config.radius / r
+        new_coords = (self.coords - center) * alfa + config.center
+        new_r = self.r * alfa
+        
+        pygame.draw.circle(config.screen, self.color, (new_coords.x, new_coords.y), new_r)
+        
+        
+        
+        
