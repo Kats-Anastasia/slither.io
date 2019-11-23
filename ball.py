@@ -29,15 +29,15 @@ class Ball():
         self.x = other.x
         self.y = other.y
         
-    def draw(self, center, r):
+    def draw(self, center):
         '''
         Рисует шарик змеи в случае, если он попадает на экран. Пересчитывает свои "глобальные" координаты в координаты экрана.
         '''
-        alfa = config.radius / r
+        alfa = config.radius / config.radius
         new_coords = (self.coords - center) * alfa + config.center
-        new_r = self.r * alfa
+        new_r = int(self.r * alfa)
         
-        pygame.draw.circle(config.screen, self.color, (new_coords.x, new_coords.y), new_r)
+        pygame.draw.circle(config.screen, self.color, (int(new_coords.x), int(new_coords.y)), new_r)
         
         
         

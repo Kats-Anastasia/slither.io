@@ -1,6 +1,7 @@
 import pygame
 import colors
 import random
+import math
 
 from ball import Ball
 import config
@@ -37,19 +38,19 @@ class Head(Ball):
         
         mouse_x, mouse_y = pygame.mouse.get_pos()
         mouse_alfa = math.atan2((mouse_y - self.y), (mouse_x - self.x))
-        self_alfa = math.atan2(slef.vy, self.vx)
+        self_alfa = math.atan2(self.vy, self.vx)
         delta_alfa = mouse_alfa - self.alfa
         
         if math.fabs(delta_alfa) < math.pi / 2:
             acceleration *= math.cos(math.pi / 2 - math.copysign(delta_alfa, 1))
-        delta_alfa = math.copysign(pi/2, delta_alfa)
+        delta_alfa = math.copysign(math.pi/2, delta_alfa)
         mouse_alfa = self_alfa + delta_alfa
         self.vx += acceleration * math.cos(mouse_alfa)
         self.vy += acceleration * math.sin(mouse_alfa)
         self.x += self.vx
         self.y += self.vy
         
-    def draw(self, a, b):
+    def draw(self, a):
         '''
         Переменные a и b нужны чтобы не прописывать отдельно
         движение для головы от остальных шариков. Так они нигде
@@ -57,4 +58,4 @@ class Head(Ball):
         Голова рисуется все время одинаковой. Потом, возможно, будут добавлены глаза и какая-то такая фигня
         '''
         
-        pygame.draw.circle(config.screen, self.color, (config.center.x, config.center.y), config.radius)
+        pygame.draw.circle(config.screen, self.color, (int(config.center.x), int(config.center.y)), config.radius)

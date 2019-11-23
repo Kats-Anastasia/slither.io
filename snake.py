@@ -8,6 +8,9 @@ from vector import Vector2d
 from head import Head
 
 '''
+Задачи:
+1) Прописать уменьшение размеров змеи при ускорении и появление новой еды
+
 Не решенные задачи:
 1) Генерирование змеи вдали от других змей
 5) Все числовые значения буду подгонять по красоте
@@ -15,7 +18,7 @@ from head import Head
 '''
 
 class Snake():
-    def __init__(self, colors, name):
+    def __init__(self, color = colors.snake, name=0):
         ''' Создает новую змею в случайном месте, длиной 50 шариков.
         Координатой змеи считаются координаты центра головы. '''
     
@@ -23,7 +26,10 @@ class Snake():
         Не готово:
         1) Имя змеи
         '''
-        self.colors = colors
+        if color == colors.snake:
+            self.colors = random.choice(colors.snake)
+        else:
+            self.colors = color
         self.num = len(self.colors)
         self.name = name
         self.energy = 0
@@ -31,7 +37,7 @@ class Snake():
         self.x = 500
         self.y = 500
         self.coords = Vector2d(self.x, self.y)
-        self.r = 50
+        self.r = 5
         self.length = 0
         
         self.balls = []
@@ -40,7 +46,7 @@ class Snake():
         self.length += 1
         for i in range(49):
             color = self.colors[(i + 1) % self.num]
-            new_ball = Ball(x=self.x + i, y=self.y, color=color)
+            new_ball = Ball(x=self.x + 5 * i, y=self.y, color=color, r=5)
             self.balls += [new_ball]
             self.length += 1
         self.energy = self.length
@@ -60,6 +66,8 @@ class Snake():
                     self.y = b.y
             self.hit()
             self.eat()
+        if speeding != 1:
+            pass
 
     def hit(self):
         ''' Проверяет не столкнулась ли змея с другой змеей. Если столкнулась, то
@@ -87,7 +95,7 @@ class Snake():
                                 other.destroyed()
                         # Сравнивает углы под которыми было соударение к линии, соединяющей центры. Выживает штука с наибольшим углом. При равных, выживает случайная
  
-    def eat(self, other):
+    def eat(self):
         '''Чекает столкнулась ли башка с едой, создает новый шарик, убивает еду'''
         
         for f in config.all_food:
@@ -107,11 +115,12 @@ class Snake():
         length = self.energy // 1
         while len(self.balls) < length:
             color = self.colors[len(self.balls) % self.num]
-            new_ball = Ball(x=self.balls[len(self.balls) + 1].x, y=self.balls[len(self.balls) + 1].y, color=color)
+            new_ball = Ball(x=self.balls[len(self.balls) + 1].x, y=self.balls[len(self.balls) + 1].y, color=color, r=self.r)
             self.balls += [new_ball]
             self.length += 1
             for b in self.balls:
                 b.r += 0.1
+            self.r +=1
     def destroyed(self):
         '''
         Тут уничтожается змея, превращается в большую еду каждый шарик змейки
@@ -127,7 +136,7 @@ class Snake():
                 dr = random.uniform(0, self.r - 5)
                 dx = random.uniform(0 - dr, dr)
                 sign = random.choise(-1, 1)
-                dy = math.sqrt( dr ** 2 - dx ** 2) * sign
+                dy = math.sqrt(dr ** 2 - dx ** 2) * sign
             
                 new_food = Food(r=5, x=b.x + dx, y=b.y + dy)
                 config.all_food += [new_food]
@@ -135,6 +144,8 @@ class Snake():
                 config.snake_energy -= 3
                 del config.self.balls[config.self.balls.index(f)]
         del config.snakes[config.snakes.index(self)]
+        pygame.time.delay(100)
+        
     def draw(self):
         '''
         Вызывается каждый раз, когда нужно отрисовать змею.

@@ -4,61 +4,65 @@ import pygame
 
 import config
 from ball import Ball
-from food import Food and Big_food #хз
+from food import Food
 from head import Head
 from snake import Snake
 #from text_object import TextObject
 import colors
 
+'''
+Не решенные проблемы, их тут дофига и с горкой:
+1) Ничего не работает, надо как следует писать этот код
+'''
 
-    
+'''
+Энергия - сложная хуйня, необходимость в которой объясняется тем, что игра должна
+бесконечно долго работать, и при этом не не должна исчезать вся еда с одной стороны,
+и не появлялись слишком много еды или слишком большие змеи с другой. Примерно как
+сумма массы и энергии постоянна в мире, так и здесь сумма с неким коэффициентом
+еды и "массы" змей постоянна. Чтобы еда продолжала генерироваться, приходится
+рассчитать "потери" энергии вникуда: например, энергия змеи перед смертью была 30
+условных единиц, но змея, которая полностью съела еду-останки, получила всего 20.
+Оставшаяся энергия ушла в общий "банк" и в дальнейшем будет сгенерирована в виде
+новых фишек еды. За все это отвечают константы food_energy, snake_energy, energy.
+
+Собственная энергия каждого шарика равна 1. Фишки еды весят линейно от радиуса и при r = 5 
+стоят 2.5 единицы энергии. При смерти на месте каждого третьего шарика змеи создается
+1 шарик с радиусом 5. Получается, что за каждые три шарика выделяется 0.5 единиц энергии.
+Эта энергия уйдет на генерацию новых фишек еды.
+'''
+
+
 class Game():
-    
-    self.energy = 0 #Штука, обозначающая полную энергию системы. Она складывается с некоторым коэффициентом из колличества шариков змеи, количества шариков еды, может быть чего-то еще)
-
     def __init__(self):
-        # Туть рисуется начальный экран, где вводится Имя, выбирается цвет, нажимается кнопка старта игры.        
         pygame.init()
-        self.screen = pygame.display.set_mode((configuration.screen_wight, configuration.screen_height))
-        start = True
-        self.color = 0
-        self.name = 0
-        while start: # Может лучше не так, а просто чтобы он ждал пока не произойдет событие. Но я не знаю как это сделать
+        config.screen = pygame.display.set_mode((config.screen_width,config.screen_height))
+        config.screen.fill(colors.white)
+        new_snake = Snake()
+        config.snakes += [new_snake]
+        for i in range (0): # Столько еды создастся изначально
+            new_food = Food()
+            config.all_food += [new_food]
+        config.process = True
+        while config.process:
+            config.screen.fill(colors.white)
+            pygame.time.delay(200)
             for i in pygame.event.get():
-                # if i.type == pygame. # Штука, отвечающая за нажатие кнопки
-                start = False
-            # Тут еще хуйня, которая выполняет выбор цвета змеи, вводит название
-            pygame.time.delay(20)
-        self.start_game(name=self.name, color=self.color)
-    def start_game(self):
-        self.screen = pygame.display.set_mode((1000,1000))
-        self.new_snake = Snake(name=self.name, color=self.color, game=self)
-        self.snakes = []
-        self.snakes += [new_snake]
-        self.all_food = []
-        for i in range (100): # Столько еды создастся изначально
-            new_food = Food(game)
-            self.all_food += [new_food]
-        process = True
-        while process:
-            self.new_snake.timer += 1 # (ну или сколько там (возможно, таймер не нужен, а он будет только на фишки еды)
-            for s in self.snakes:
+                if i.type == pygame.QUIT:
+                    exit()
+            for s in config.snakes:
                 s.move()
-            if self.energy < 1000: # Ну или сколько там
-                new_food = Food(game)
-                self.all_food += new_food
-            for s in snakes:
-                s.hit(self)
-            pygame.time.delay(200) #Ну или сколько там нужно времени (между движениями змейки)
+            while config.food_energy + config.snake_energy < config.max_energy: # Ну или сколько там
+                new_food = Food()
+                config.all_food += [new_food]
+            for s in config.snakes:
+                s.draw()
+            for f in config.all_food:
+                f.draw(new_snake.coords)
+            pygame.display.update()
 
-new_game = game()
+
+if __name__ == "__main__":
+    new_game = Game()
     
     
-    
-    
-    
-    
-    
-    
-    
-     

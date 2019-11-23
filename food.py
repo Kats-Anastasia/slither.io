@@ -5,14 +5,17 @@ import random
 from vector import Vector2d
 import config
 
+'''
+Не сделан класс большой еды. Остальное вроде готово.
+'''
+
 class Food():
-    def __init__(self, game, r=0 x=0, y=0, color=colors.food):
-    '''
-    Создается 1 шарик еды, с заданными координатами, радиусом, цвет выбирается случайно из списка цветов.
-    '''
+    def __init__(self, r=0, x=0, y=0, color=colors.food):
+        '''
+        Создается 1 шарик еды, с заданными координатами, радиусом, цвет выбирается случайно из списка цветов.
+        '''
         self.x = x
         self.y = y
-        self.coords = Vector2d(self.x, self.y)
         self.r = r
         if color == colors.food:
             self.color = random.choice(color)
@@ -20,22 +23,23 @@ class Food():
             self.color = color
         if self.r == 0:
             self.r = random.uniform(1, 5)
-        self.energy = 0.5 * self.r
+            self.energy = 0.5 * self.r
+            config.food_energy += self.energy
         if self.x == 0 and self.y == 0: # Создает шарик еды в случайном месте
-            self.x = random.uniform(5, 9995)
-            self.y = random.uniform(5, 9995)
-    def draw(self, center, r):
+            self.x = random.uniform(5, 800)
+            self.y = random.uniform(5, 600)
+        self.coords = Vector2d(self.x, self.y)
+    def draw(self, center):
         '''
         Рисует шарик еды в случае, если он попадает на экран.
         Пересчитывает свои "глобальные" координаты в координаты экрана.
         '''
-        alfa = config.radius / r
+        alfa = config.radius / config.radius
         new_coords = (self.coords - center) * alfa + config.center
-        new_r = self.r * alfa
+        new_r = int(self.r * alfa)
         
-        pygame.draw.circle(config.screen, self.color, (new_coords.x, new_coords.y), new_r)
+        pygame.draw.circle(config.screen, self.color, (int(new_coords.x), int(new_coords.y)), new_r)
     
-        
         
 class Big_food(Food):  # А может быть нахуй???
     def __init__(self):
