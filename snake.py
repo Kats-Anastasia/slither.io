@@ -1,11 +1,13 @@
 import pygame
 import colors
 import random
+import math
 
 import config
 from ball import Ball
 from vector import Vector2d
 from head import Head
+from food import Food
 
 '''
 Задачи:
@@ -51,6 +53,7 @@ class Snake():
             self.balls += [new_ball]
             self.length += 1
         self.energy = self.length
+        self.speed_timer = 0
         
     def move(self, speeding=1):
         ''' Двигает змею, начиная с последнего шарика, меняяя его координаты
@@ -67,8 +70,17 @@ class Snake():
                     self.coords = Vector2d(self.x, self.y)
             self.hit()
             self.eat()
+        if self.x + self.r < 0 or self.x + self.r > config.max_width or self.y + self.r > config.max_height or self.y - self.r < 0:
+            self.destroyed()
         if speeding != 1:
-            pass
+            self.speed_timer += 1
+        else:
+            self.speed_timer = 0
+        if self.speed_timer >= 4:
+            self.speed_timer = 0
+            self.energy -= 1
+            self.reduction()
+            print(len(self.balls))
 
     def hit(self):
         ''' Проверяет не столкнулась ли змея с другой змеей. Если столкнулась, то
@@ -110,7 +122,7 @@ class Snake():
     def grow(self): 
         '''
         Тут смотрится скоко энергии в змее и если ее значение больше чем сколько-то,
-        то появляется новый шарик или увеличивается радиуc
+        то появляется новый шарик и увеличивается радиуc
         '''
         
         length = self.energy // 1
@@ -119,34 +131,48 @@ class Snake():
             new_ball = Ball(x=self.balls[len(self.balls) - 1].x, y=self.balls[len(self.balls) - 1].y, color=color, r=self.r)
             self.balls += [new_ball]
             self.length += 1
+            
             for b in self.balls:
                 b.r += 0.01
             self.r +=0.01
             config.r += 0.01
+            print(self.length)
+    def reduction(self):
+        
+        length = self.energy // 1
+        while len(self.balls) > length:
+            new_food = Food(r=2, x=self.balls[len(self.balls) - 1].x, y=self.balls[len(self.balls) - 1].y)
+            config.all_food += [new_food]
+            config.food_energy += 1
+            config.snake_energy -= 1
+            del self.balls[len(self.balls) - 1]
+            self.length -= 1
+            self.r -=0.01
+            config.r -= 0.01
     def destroyed(self):
         '''
         Тут уничтожается змея, превращается в большую еду каждый шарик змейки
-        ждет некоторое время и выкидывает на экран геймовера.'''
+        ждет некоторое время и выкидывает на экран геймовера.
+        '''
         
         if len(self.balls) % 3 == 0:
-            snake_energy += 2
-        elif len(self.balls) % 3 == 1:
-            snake_energy += 1
+            config.snake_energy += 2
+        if len(self.balls) % 3 == 1:
+            config.snake_energy += 1
         for b in self.balls:
             if self.balls.index(b) % 3 == 0:
                 
-                dr = random.uniform(0, self.r - 5)
+                dr = random.uniform(0, self.r - 2)
                 dx = random.uniform(0 - dr, dr)
-                sign = random.choise(-1, 1)
+                sign = random.choice([-1, 1])
                 dy = math.sqrt(dr ** 2 - dx ** 2) * sign
             
                 new_food = Food(r=5, x=b.x + dx, y=b.y + dy)
                 config.all_food += [new_food]
                 config.food_energy += 2.5
-                config.snake_energy -= 3
-                del config.self.balls[config.self.balls.index(f)]
+                config.snake_energy -= 2
+                del self.balls[self.balls.index(b)]
         del config.snakes[config.snakes.index(self)]
-        pygame.time.delay(100)
         
     def draw(self):
         '''
@@ -155,20 +181,3 @@ class Snake():
         
         for b in reversed(self.balls):
             b.draw(self.coords)
-        
-        '''
-        Рисует шарик змеи в случае, если он попадает на экран. Пересчитывает свои "глобальные" координаты в координаты экрана.
-        '''
-        coords_1 = Vector2d(0, 0)
-        coords_2 = Vector2d(0, 8000)
-        coords_3 = Vector2d(10000, 8000)
-        coords_4 = Vector2d(10000, 0)
-        alfa = config.radius / self.r
-        new_coords1 = (coords_1 - self.coords) * alfa + config.center
-        new_coords2 = (coords_2 - self.coords) * alfa + config.center
-        new_coords3 = (coords_3 - self.coords) * alfa + config.center
-        new_coords4 = (coords_4 - self.coords) * alfa + config.center
-        pygame.draw.lines(config.screen, colors.red_skin_8, True, [[new_coords1.x, new_coords1.y],
-                                                 [new_coords2.x, new_coords2.y], 
-                                                 [new_coords3.x, new_coords3.y],
-                                                 [new_coords4.x, new_coords4.y]], 4)

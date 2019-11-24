@@ -2,6 +2,7 @@ import random
 import math
 import pygame
 
+from place import Place
 import config
 from ball import Ball
 from food import Food
@@ -40,18 +41,24 @@ class Game():
         config.screen.fill(colors.white)
         new_snake = Snake()
         config.snakes += [new_snake]
+        place = Place()
         for i in range (0): # Столько еды создастся изначально
             new_food = Food()
             config.all_food += [new_food]
         config.process = True
         while config.process:
             config.screen.fill(colors.black)
-            pygame.time.delay(0)
+            pygame.time.delay(40)
             for i in pygame.event.get():
                 if i.type == pygame.QUIT:
                     exit()
+            pressed = pygame.mouse.get_pressed()
+            if pressed[0]:
+                speeding = 2
+            else:
+                speeding = 1
             for s in config.snakes:
-                s.move()
+                s.move(speeding)
             while config.food_energy + config.snake_energy < config.max_energy: # Ну или сколько там
                 new_food = Food()
                 config.all_food += [new_food]
@@ -59,6 +66,7 @@ class Game():
                 s.draw()
             for f in config.all_food:
                 f.draw(new_snake.coords)
+            place.draw(new_snake.coords)
             pygame.display.update()
 
 
