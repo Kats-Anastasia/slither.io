@@ -2,9 +2,10 @@ import random
 import math
 import pygame
 
+from place import Place
 import config
 from ball import Ball
-from food import Food and Big_food #хз
+from food import Food
 from head import Head
 from snake import Snake
 #from text_object import TextObject
@@ -34,47 +35,42 @@ import colors
 
 
 class Game():
-
     def __init__(self):
-        # Туть рисуется начальный экран, где вводится Имя, выбирается цвет, нажимается кнопка старта игры.        
         pygame.init()
-        config.screen = pygame.display.set_mode((config.screen_wight, config.screen_height))
-        start = True
-        self.color = 0
-        self.name = 0
-        while start: # Может лучше не так, а просто чтобы он ждал пока не произойдет событие. Но я не знаю как это сделать
-            for i in pygame.event.get():
-                # if i.type == pygame. # Штука, отвечающая за нажатие кнопки
-                start = False
-            # Тут еще хуйня, которая выполняет выбор цвета змеи, вводит название
-            pygame.time.delay(20)
-        self.start_game(name=self.name, color=self.color)
-    def start_game(self):
-        config.screen = pygame.display.set_mode((config.screen_wight,config.screen_height))
-        self.new_snake = Snake(name=self.name, color=self.color, game=self)
+        config.screen = pygame.display.set_mode((config.screen_width,config.screen_height))
+        config.screen.fill(colors.white)
+        new_snake = Snake()
         config.snakes += [new_snake]
-        for i in range (100): # Столько еды создастся изначально
-            new_food = Food(game)
+        place = Place()
+        for i in range (0): # Столько еды создастся изначально
+            new_food = Food()
             config.all_food += [new_food]
-        process = True
-        while process:
+        config.process = True
+        while config.process:
+            config.screen.fill(colors.black)
+            pygame.time.delay(40)
+            for i in pygame.event.get():
+                if i.type == pygame.QUIT:
+                    exit()
+            pressed = pygame.mouse.get_pressed()
+            if pressed[0]:
+                speeding = 2
+            else:
+                speeding = 1
             for s in config.snakes:
-                s.move()
-            while self.energy < 10000: # Ну или сколько там
+                s.move(speeding)
+            while config.food_energy + config.snake_energy < config.max_energy: # Ну или сколько там
                 new_food = Food()
-                config.all_food += new_food
+                config.all_food += [new_food]
             for s in config.snakes:
-                s.hit(self)
-            pygame.time.delay(200) #Ну или сколько там нужно времени (между движениями змейки)
+                s.draw()
+            for f in config.all_food:
+                f.draw(new_snake.coords)
+            place.draw(new_snake.coords)
+            pygame.display.update()
 
-new_game = game()
+
+if __name__ == "__main__":
+    new_game = Game()
     
     
-    
-    
-    
-    
-    
-    
-    
-     
