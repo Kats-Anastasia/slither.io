@@ -28,12 +28,12 @@ class Ball():
         '''
         self.x = other.x
         self.y = other.y
-        
+        self.coords = Vector2d(self.x, self.y)
     def draw(self, center):
         '''
         Рисует шарик змеи в случае, если он попадает на экран. Пересчитывает свои "глобальные" координаты в координаты экрана.
         '''
-        alfa = config.radius / config.radius
+        alfa = config.radius / self.r
         new_coords = (self.coords - center) * alfa + config.center
         new_r = int(self.r * alfa)
         

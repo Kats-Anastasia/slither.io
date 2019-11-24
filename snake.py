@@ -18,7 +18,7 @@ from head import Head
 '''
 
 class Snake():
-    def __init__(self, color = colors.snake, name=0):
+    def __init__(self, color = colors.skins_snake, name=0):
         ''' Создает новую змею в случайном месте, длиной 50 шариков.
         Координатой змеи считаются координаты центра головы. '''
     
@@ -26,8 +26,8 @@ class Snake():
         Не готово:
         1) Имя змеи
         '''
-        if color == colors.snake:
-            self.colors = random.choice(colors.snake)
+        if color == colors.skins_snake:
+            self.colors = random.choice(colors.skins_snake)
         else:
             self.colors = color
         self.num = len(self.colors)
@@ -38,15 +38,16 @@ class Snake():
         self.y = 500
         self.coords = Vector2d(self.x, self.y)
         self.r = 5
+        config.r = self.r
         self.length = 0
         
         self.balls = []
         head = Head(color=self.colors[0], x=self.x, y=self.y)
         self.balls += [head]
         self.length += 1
-        for i in range(49):
-            color = self.colors[(i + 1) % self.num]
-            new_ball = Ball(x=self.x + 5 * i, y=self.y, color=color, r=5)
+        for i in range(9):
+            color = self.colors[(i+1) % self.num]
+            new_ball = Ball(x=self.x, y=self.y, color=color, r=5)
             self.balls += [new_ball]
             self.length += 1
         self.energy = self.length
@@ -55,7 +56,6 @@ class Snake():
         ''' Двигает змею, начиная с последнего шарика, меняяя его координаты
         на координаты предыдущего. Для головы движение прописано в отдельном классе.
         Speeding принимает значение либо 1, либо 2-4, когда зажата кнопка мыши. '''
-        
         for i in range(speeding):
             for b in reversed(self.balls):
                 if self.balls.index(b) > 0:
@@ -64,6 +64,7 @@ class Snake():
                     b.move(speeding)
                     self.x = b.x
                     self.y = b.y
+                    self.coords = Vector2d(self.x, self.y)
             self.hit()
             self.eat()
         if speeding != 1:
@@ -115,12 +116,13 @@ class Snake():
         length = self.energy // 1
         while len(self.balls) < length:
             color = self.colors[len(self.balls) % self.num]
-            new_ball = Ball(x=self.balls[len(self.balls) + 1].x, y=self.balls[len(self.balls) + 1].y, color=color, r=self.r)
+            new_ball = Ball(x=self.balls[len(self.balls) - 1].x, y=self.balls[len(self.balls) - 1].y, color=color, r=self.r)
             self.balls += [new_ball]
             self.length += 1
             for b in self.balls:
-                b.r += 0.1
-            self.r +=1
+                b.r += 0.01
+            self.r +=0.01
+            config.r += 0.01
     def destroyed(self):
         '''
         Тут уничтожается змея, превращается в большую еду каждый шарик змейки

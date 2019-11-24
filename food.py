@@ -34,7 +34,7 @@ class Food():
         Рисует шарик еды в случае, если он попадает на экран.
         Пересчитывает свои "глобальные" координаты в координаты экрана.
         '''
-        alfa = config.radius / config.radius
+        alfa = config.radius / config.r
         new_coords = (self.coords - center) * alfa + config.center
         new_r = int(self.r * alfa)
         

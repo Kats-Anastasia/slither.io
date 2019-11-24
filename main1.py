@@ -45,8 +45,8 @@ class Game():
             config.all_food += [new_food]
         config.process = True
         while config.process:
-            config.screen.fill(colors.white)
-            pygame.time.delay(200)
+            config.screen.fill(colors.black)
+            pygame.time.delay(50)
             for i in pygame.event.get():
                 if i.type == pygame.QUIT:
                     exit()
