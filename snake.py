@@ -156,3 +156,19 @@ class Snake():
         for b in reversed(self.balls):
             b.draw(self.coords)
         
+        '''
+        Рисует шарик змеи в случае, если он попадает на экран. Пересчитывает свои "глобальные" координаты в координаты экрана.
+        '''
+        coords_1 = Vector2d(0, 0)
+        coords_2 = Vector2d(0, 8000)
+        coords_3 = Vector2d(10000, 8000)
+        coords_4 = Vector2d(10000, 0)
+        alfa = config.radius / self.r
+        new_coords1 = (coords_1 - self.coords) * alfa + config.center
+        new_coords2 = (coords_2 - self.coords) * alfa + config.center
+        new_coords3 = (coords_3 - self.coords) * alfa + config.center
+        new_coords4 = (coords_4 - self.coords) * alfa + config.center
+        pygame.draw.lines(config.screen, colors.red_skin_8, True, [[new_coords1.x, new_coords1.y],
+                                                 [new_coords2.x, new_coords2.y], 
+                                                 [new_coords3.x, new_coords3.y],
+                                                 [new_coords4.x, new_coords4.y]], 4)

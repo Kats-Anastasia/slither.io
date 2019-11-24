@@ -46,7 +46,7 @@ class Game():
         config.process = True
         while config.process:
             config.screen.fill(colors.black)
-            pygame.time.delay(50)
+            pygame.time.delay(0)
             for i in pygame.event.get():
                 if i.type == pygame.QUIT:
                     exit()
