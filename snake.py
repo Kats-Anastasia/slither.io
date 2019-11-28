@@ -23,7 +23,6 @@ class Snake():
     def __init__(self, color = colors.skins_snake, name=0):
         ''' Создает новую змею в случайном месте, длиной 50 шариков.
         Координатой змеи считаются координаты центра головы. '''
-    
         '''
         Не готово:
         1) Имя змеи
@@ -40,7 +39,7 @@ class Snake():
         self.y = 500
         self.coords = Vector2d(self.x, self.y)
         self.r = 5
-        config.r = self.r
+        config.snake_radius = self.r
         self.length = 0
         
         self.balls = []
@@ -59,7 +58,27 @@ class Snake():
         ''' Двигает змею, начиная с последнего шарика, меняяя его координаты
         на координаты предыдущего. Для головы движение прописано в отдельном классе.
         Speeding принимает значение либо 1, либо 2-4, когда зажата кнопка мыши. '''
-        for i in range(speeding):
+        if len(self.balls) > 9:
+            for i in range(speeding):
+                for b in reversed(self.balls):
+                    if self.balls.index(b) > 0:
+                        b.move(self.balls[(self.balls.index(b) - 1)])
+                    else:
+                        b.move(speeding)
+                        self.x = b.x
+                        self.y = b.y
+                        self.coords = Vector2d(self.x, self.y)
+                self.hit()
+                self.eat()
+            if speeding != 1:
+                self.speed_timer += 1
+            else:
+                self.speed_timer = 0
+            if self.speed_timer >= 4:
+                self.speed_timer = 0
+                self.energy -= 1
+                self.reduction()
+        else:
             for b in reversed(self.balls):
                 if self.balls.index(b) > 0:
                     b.move(self.balls[(self.balls.index(b) - 1)])
@@ -70,17 +89,8 @@ class Snake():
                     self.coords = Vector2d(self.x, self.y)
             self.hit()
             self.eat()
-        if self.x + self.r < 0 or self.x + self.r > config.max_width or self.y + self.r > config.max_height or self.y - self.r < 0:
+        if self.x - self.r < 0 or self.x + self.r > config.max_width or self.y + self.r > config.max_height or self.y - self.r < 0:
             self.destroyed()
-        if speeding != 1:
-            self.speed_timer += 1
-        else:
-            self.speed_timer = 0
-        if self.speed_timer >= 4:
-            self.speed_timer = 0
-            self.energy -= 1
-            self.reduction()
-            print(len(self.balls))
 
     def hit(self):
         ''' Проверяет не столкнулась ли змея с другой змеей. Если столкнулась, то
@@ -135,8 +145,7 @@ class Snake():
             for b in self.balls:
                 b.r += 0.01
             self.r +=0.01
-            config.r += 0.01
-            print(self.length)
+            config.snake_radius += 0.01
     def reduction(self):
         
         length = self.energy // 1
@@ -148,7 +157,7 @@ class Snake():
             del self.balls[len(self.balls) - 1]
             self.length -= 1
             self.r -=0.01
-            config.r -= 0.01
+            config.snake_radius -= 0.01
     def destroyed(self):
         '''
         Тут уничтожается змея, превращается в большую еду каждый шарик змейки

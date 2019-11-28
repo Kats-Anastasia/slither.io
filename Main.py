@@ -62,13 +62,12 @@ class Game():
             while config.food_energy + config.snake_energy < config.max_energy: # Ну или сколько там
                 new_food = Food()
                 config.all_food += [new_food]
-            for s in config.snakes:
-                s.draw()
             for f in config.all_food:
                 f.draw(new_snake.coords)
+            for s in config.snakes:
+                s.draw()
             place.draw(new_snake.coords)
             pygame.display.update()
-
 
 if __name__ == "__main__":
     new_game = Game()

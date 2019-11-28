@@ -34,14 +34,14 @@ class Food():
         Рисует шарик еды в случае, если он попадает на экран.
         Пересчитывает свои "глобальные" координаты в координаты экрана.
         '''
-        alfa = config.radius / config.r
+        alfa = config.radius / config.snake_radius
         new_coords = (self.coords - center) * alfa + config.center
         new_r = int(self.r * alfa)
         
         pygame.draw.circle(config.screen, self.color, (int(new_coords.x), int(new_coords.y)), new_r)
     
         
-class Big_food(Food):  # А может быть нахуй???
+class Big_food(Food):
     def __init__(self):
         # может быть будет зависеть от чего-то другого, не знаю. В общем если кнопка мыши зажата, он выдет 3 (например)
         # если не зажата, то просто 1. Это коэффециент, на который будет умножаться наша конечная скорость.

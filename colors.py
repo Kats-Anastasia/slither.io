@@ -71,6 +71,3 @@ food = [yellow_food, red_food, green_food, blue_food, pink_food,
 purple_skin = [purple, black, white]
 skins_snake = [red_skin, green_skin, yellow_skin, bee_skin] # Массив массивов скинов змей
 skins_snake = [red_skin, green_skin, yellow_skin, bee_skin] # Массив массивов скинов змей
-for i in range(2):
-    print(i)
-print(purple[1])
