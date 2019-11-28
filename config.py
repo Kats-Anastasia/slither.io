@@ -3,8 +3,8 @@ from vector import Vector2d
 
 screen_width = 800
 screen_height = 600
-max_width = 800
-max_height = 600
+max_width = 1000
+max_height = 800
 background_image = 'images/background_1(2, 3, 4).jpg' #потом выберем фон
 screen = 0
 process = True

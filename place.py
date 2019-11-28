@@ -3,6 +3,10 @@ import config
 import colors
 import pygame
 
+'''
+Штука, рисующая рамку
+'''
+
 class Place:
     def __init__(self):
         self.coords_1 = Vector2d(0, 0)
