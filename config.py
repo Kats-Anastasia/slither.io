@@ -1,4 +1,4 @@
-import colors #шняга в которой будут задаваться численные параметры и цветовое оформление игр, а еще все штуки на которые надо ссылаться
+import colors 
 from vector import Vector2d
 
 screen_width = 800
