@@ -8,6 +8,7 @@ from ball import Ball
 from food import Food
 from head import Head
 from snake import Snake
+from network import Network
 #from text_object import TextObject
 import colors
 
