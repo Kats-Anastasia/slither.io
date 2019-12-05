@@ -3,7 +3,7 @@ from _thread import *
 from snake import Snake
 import pickle
 
-server = "127.0.0.1"
+server = "127.0.0.53"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
