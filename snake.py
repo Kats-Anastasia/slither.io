@@ -41,6 +41,7 @@ class Snake():
         self.r = 5
         config.snake_radius = self.r
         self.length = 0
+        self.life = 1
         
         self.balls = []
         head = Head(color=self.colors[0], x=self.x, y=self.y)
@@ -100,7 +101,7 @@ class Snake():
             if config.snakes.index(other) != config.snakes.index(self):
                 for b in other.balls:
                     if other.balls.index(b) != 0:
-                        if abs(self.coords - other.coords) < self.r + b.r: 
+                        if abs(self.coords -  b.coords) < self.r + b.r: 
                             self.destroyed()
                     else:
                         delta_r2 = self.coords - other.coords
@@ -182,6 +183,7 @@ class Snake():
                 config.snake_energy -= 2
                 del self.balls[self.balls.index(b)]
         del config.snakes[config.snakes.index(self)]
+        self.life = 0
         
     def draw(self):
         '''

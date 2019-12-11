@@ -9,7 +9,8 @@
 
 white = (255, 255, 255)
 black = (0,0,0)
-purple = (253, 87, 255)
+purple = (110, 24, 196)
+green = (36, 181, 43)
 
 yellow_food = (253, 253, 165)
 red_food = (253, 96, 107)
@@ -69,5 +70,4 @@ bee_skin = [bee_skin_1, bee_skin_2, bee_skin_2]
 food = [yellow_food, red_food, green_food, blue_food, pink_food,
         pink_1_food, purple_food, light_blue_food, orange_food] # Массив цветов
 purple_skin = [purple, black, white]
-skins_snake = [red_skin, green_skin, yellow_skin, bee_skin] # Массив массивов скинов змей
 skins_snake = [red_skin, green_skin, yellow_skin, bee_skin] # Массив массивов скинов змей
