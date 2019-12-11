@@ -8,8 +8,6 @@ from ball import Ball
 from food import Food
 from head import Head
 from snake import Snake
-from network import Network
-#from text_object import TextObject
 import colors
 
 
@@ -39,15 +37,12 @@ class Game():
         new_snake = Snake()
         config.snakes += [new_snake]
         place = Place()
-        for i in range (0): # Столько еды создастся изначально
-            new_food = Food()
-            config.all_food += [new_food]
+       
         config.process = True
+        
         while config.process:
-            config.screen.fill(colors.black)
-            pygame.time.delay(40)
             for i in pygame.event.get():
-                if i.type == pygame.QUIT:
+                if i.type == pygame.QUIT: #ыыыыыыыыыыыыы
                     exit()
             pressed = pygame.mouse.get_pressed()
             if pressed[0]:
@@ -59,15 +54,16 @@ class Game():
             while config.food_energy + config.snake_energy < config.max_energy: # Ну или сколько там
                 new_food = Food()
                 config.all_food += [new_food]
+            config.screen.fill(colors.black)
             for f in config.all_food:
                 f.draw(new_snake.coords)
             for s in config.snakes:
                 s.draw()
             place.draw(new_snake.coords)
             pygame.display.update()
+            pygame.time.delay(40)
+ 
             
-
-        
 if __name__ == "__main__":
     new_game = Game()
     
