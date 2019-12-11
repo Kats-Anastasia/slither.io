@@ -8,6 +8,7 @@ from ball import Ball
 from food import Food
 from head import Head
 from snake import Snake
+from network import Network
 #from text_object import TextObject
 import colors
 
@@ -64,7 +65,9 @@ class Game():
                 s.draw()
             place.draw(new_snake.coords)
             pygame.display.update()
+            
 
+        
 if __name__ == "__main__":
     new_game = Game()
     
