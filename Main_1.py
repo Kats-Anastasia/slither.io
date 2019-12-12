@@ -77,7 +77,7 @@ class Main():
                     exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN: #тип события - опускание кнопки мыши
                     if event.button == 1: #тип кнопки - левая
-                        if 320 < event.pos[0] < 480 and 400 < event.pos[0] < 480: #хзззз #попадание на кнопку ?????????
+                        if 320 < event.pos[0] < 480 and 400 < event.pos[1] < 480: #вроде должно
                             self.game()
                         
        
